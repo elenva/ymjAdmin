@@ -17,3 +17,18 @@ export function $addCoupons(params) {
         data:params
     })
 }
+//删除一个优惠券
+export function $delCoupon(id){
+    return request({
+        url: `/sys/coupon/deleteCoupon/${id}`,
+        method: 'post'
+    })
+}
+
+//获取用户列表
+export function $getUsers(params){
+    return request({
+        url: `/sys/user/selectUser?key=${params.key}&page=${params.page}`,
+        method: 'post'
+    })
+}

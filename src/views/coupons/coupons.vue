@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Page @change="pageChange" :tableData="formData.datas">
+        <Page @change="pageChange" :tableData="formData" v-if="formData">
             <el-row type="flex" slot="handleArea">
                 <el-col :span="18">
                     <el-button type="primary" @click="addCoupon">添加优惠券</el-button>
@@ -37,15 +37,15 @@
                     <el-table-column
                         prop="id"
                         label="地址">
-                        <template>
-                            <el-button type="danger" size="small">删除</el-button>
-                            <el-button type="primary" size="small">发送</el-button>
+                        <template slot-scope="{row}">
+                            <el-button type="danger" size="small" @click="del(row)">删除</el-button>
+                            <el-button type="primary" size="small" @click="send(row)">发送</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
             </el-row>
         </Page>
-    <!-- 添加优惠券 -->
+        <!-- 添加优惠券 -->
         <el-dialog 
             title="添加优惠券"
             width="400px"
@@ -80,15 +80,24 @@
                 <el-button @click="addFormReset">重置</el-button>
             </el-row>
         </el-dialog>
+        <!-- 发送给用户 -->
+        <el-dialog :visible="showSendDialog" width="1000px" @close="showSendDialog=false">
+            <UserList @changeSelect="sendDialogChange" select/>
+            <div style="text-align:right">
+                <el-button type="primary" @click="sendModalSure">确认</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-    import { $getCoupons,$addCoupons } from '@/api/index.js'
+    import { $getCoupons,$addCoupons,$delCoupon } from '@/api/index.js';
+    import UserList from '@/components/UserList';
     export default {
         data(){
             return {
-                formData:[],
+                showSendDialog:false,
+                formData:null,
                 keyword:'',
                 showAddModal:false,//显示添加优惠券的模态框
                 formModel:{
@@ -99,6 +108,7 @@
                     keyword2:'',//满减
                     name:'',
                 },
+                currentPage:1,
                 rules:{
                     rangeTime:[
                         {required:true,message:"请选择开始结束时间",trigger:'change'}
@@ -118,26 +128,26 @@
         mounted(){
             this.getCoupons()
         },
+        components:{UserList},
         methods:{
             getCoupons(data){
                 let params ={
-                    page:1,
+                    page:this.currentPage,
                     key:this.keyword
                 }
                 if(data) params ={...params,...data}
                 $getCoupons(params).then(res=> {
-                    console.log(res)
                     this.formData = res;
                 })
             },
             //搜索
             search(){
-                if(!this.keyword) return;
                 this.getCoupons();
             },
             //pageChange
             pageChange(page){
-                this.getCoupons({page})
+                this.currentPage = page;
+                this.$nextTick(()=> this.getCoupons());
             },
             //添加优惠券
             addCoupon(){
@@ -167,7 +177,23 @@
             //重置添加优惠券表单
             addFormReset(){
                 this.$refs.addForm.resetFields();
-            }
+            },
+            //删除优惠券
+            del(row) {
+                $delCoupon(row.id).then(res=> {
+                    this.getCoupons({page:1});
+                })
+            },
+            //把优惠券发送给用户
+            send(row) {
+                this.showSendDialog = true;
+            },
+            //选择用户表格选中事件
+            sendDialogChange(){
+
+            },
+            //选择用户模态框确认事件
+            sendModalSure(){}
         }
     }
 </script>

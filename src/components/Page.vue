@@ -11,7 +11,7 @@
                 @current-change="currentChange"
                 background
                 layout="prev, pager, next"
-                :total="1000">
+                :total="tableData?tableData.total:0">
             </el-pagination>
         </div>
     </div>
@@ -24,6 +24,9 @@
             currentChange(pg){
                 this.$emit('change',pg)
             },
+        },
+        mounted(){
+            console.log(this.tableData)
         }
     }
 </script>
