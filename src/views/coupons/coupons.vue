@@ -38,8 +38,14 @@
                         prop="id"
                         label="地址">
                         <template slot-scope="{row}">
-                            <el-button type="danger" size="small" @click="del(row)">删除</el-button>
-                            <el-button type="primary" size="small" @click="send(row)">发送</el-button>
+                            <el-button 
+                                type="danger" 
+                                size="mini" 
+                                @click="del(row)">删除</el-button>
+                            <el-button 
+                                type="primary" 
+                                size="mini" 
+                                @click="send(row)">发送</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -81,8 +87,18 @@
             </el-row>
         </el-dialog>
         <!-- 发送给用户 -->
-        <el-dialog :visible="showSendDialog" width="1000px" @close="showSendDialog=false">
-            <UserList @changeSelect="sendDialogChange" select/>
+        <el-dialog 
+            :visible="Boolean(showSendDialog)" 
+            width="1000px" 
+            @close="showSendDialog=false">
+            <el-radio-group v-model="sendDialogRadio">
+                <el-radio label="1">指定用户</el-radio>
+                <el-radio label="2">全部用户</el-radio>
+            </el-radio-group>
+            <UserList
+                v-if="sendDialogRadio === '1'" 
+                :selection="true" 
+                @selectedRow="selectedRow"/>
             <div style="text-align:right">
                 <el-button type="primary" @click="sendModalSure">确认</el-button>
             </div>
@@ -91,11 +107,13 @@
 </template>
 
 <script>
-    import { $getCoupons,$addCoupons,$delCoupon } from '@/api/index.js';
+    import { $getCoupons,$addCoupons,$delCoupon,$postCouponToUser } from '@/api/index.js';
     import UserList from '@/components/UserList';
     export default {
         data(){
             return {
+                selectedRows:[],
+                sendDialogRadio:'1',
                 showSendDialog:false,
                 formData:null,
                 keyword:'',
@@ -186,14 +204,31 @@
             },
             //把优惠券发送给用户
             send(row) {
-                this.showSendDialog = true;
+                this.showSendDialog = row.id;
             },
             //选择用户表格选中事件
-            sendDialogChange(){
-
+            selectedRow(rows){
+                this.selectedRows = rows;
+                console.log(rows)
             },
             //选择用户模态框确认事件
-            sendModalSure(){}
+            sendModalSure(){
+                const {selectedRows,sendDialogRadio,showSendDialog} = this;
+                const openIds = [];
+                selectedRows.length && selectedRows.map(item=> {
+                    openIds.push(item.openId);
+                })
+                const params = {
+                    id:showSendDialog,
+                    openIds,
+                    sendDialogRadio
+                }
+
+                $postCouponToUser(params).then(res=> {
+                    this.$message.success(`操作成功`);
+                    this.showSendDialog = false;
+                })
+            }
         }
     }
 </script>

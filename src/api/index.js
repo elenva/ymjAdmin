@@ -32,3 +32,29 @@ export function $getUsers(params){
         method: 'post'
     })
 }
+
+//把优惠券指定给部分用户或者全部用户
+export function $postCouponToUser(params){
+    return request({
+        url:`/sys/coupon/addCouponToUser/${params.sendDialogRadio}`,
+        method:'post',
+        data:params
+    })
+}
+
+//根据状态获取提现列表
+export function $getPutList(params){
+    return request({
+        url:`/sys/extract/selectExtractList/${params.type}?key=${params.key}&page=${params.page}`,
+        method:'post',
+    })
+} 
+
+//更新提现状态
+export function $updatePut(params){
+    return request({
+        url:`/sys/extract/updateExtract`,
+        method:'post',
+        data:params
+    })
+} 

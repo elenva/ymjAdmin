@@ -19,7 +19,7 @@
       ref="table"
       style="width: 100%">
       <el-table-column
-        v-if="select"
+        v-if="selection"
         type="selection"
         width="55">
         </el-table-column>
@@ -75,7 +75,7 @@
   import HelpHint from '@/components/HelpHint.vue';
   import {$getUsers} from '@/api/index.js'
   export default {
-    props:['select'],
+    props:['selection'],
     data() {
       return {
         key:'',
@@ -84,7 +84,6 @@
       }
     },
     mounted(){
-        alert(this.select)
       //获取用户列表
       this.getUsersList();
     },
@@ -109,7 +108,7 @@
         this.getUsersList({page:1})
       },
       selectionChange(rows){
-        console.log(rows)
+        this.$emit('selectedRow',rows)
       }
 
 
