@@ -60,11 +60,10 @@
                     </template>
                 </el-table-column>
                 <el-table-column
-                    v-if="type===1"
                     align="center"
                     prop="status"
                     label="操作">
-                    <template slot-scope="{row}">
+                    <template slot-scope="{row}" v-if="row.status === 1">
                         <el-button
                             @click="handlePass(row)" 
                             size="mini" 
@@ -117,12 +116,23 @@ export default {
         },
         //审核取消
         handleCancel(row){
-            // row.status = 3;
-            // this.updatePut(row);
+            this.$prompt('请输入提现失败的原因', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+            }).then(({ value }) => {
+                row.status = 3;
+                row.refuseRemark = value;
+                this.updatePut(row);
+            })   
         },
         //更新某条审核的状态
         updatePut(row){
-            $updatePut()
+            $updatePut(row).then(res=> {
+                this.page = 1;
+                this.$nextTick(()=> {
+                    this.getPutList()
+                })
+            })
         },
         pageChange(page){
             this.page = page;
