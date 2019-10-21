@@ -28,7 +28,7 @@ export default {
   nodeDevEnv: process.env.NODE_ENV == 'development',
   apiUrl: useApiUrl,
   siteName: '虞美家管理后台',
-  minSiteMame: 'EUI',
+  minSiteMame: '虞美家',
   apiPrefix: "",
   timeout: 5000,
   cookiesExpires: 7,
@@ -37,6 +37,6 @@ export default {
   tokenKey: 'ACCESS_TOKEN',
   userInfoKey: 'USER_INFO',
   permissionsKey:'PERMISSION_ARRAY',
-  gitHub: 'https://github.com/xusenlin/ElementUIAdmin2',
+  gitHub: ' ',
   ...localKey
 }
