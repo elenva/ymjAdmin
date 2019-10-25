@@ -37,7 +37,7 @@ icon.element_icon = {
  * @type {{name: string, icon: string, children: {}}}
  */
 menu.content_manage = {
-  name: '内容管理',
+  name: '课程管理',
   icon: 'fa fa-file-text-o',
   children: {}
 };
@@ -45,7 +45,7 @@ menu.content_manage = {
 let ContentManage = menu.content_manage.children;
 
 ContentManage.post = {
-  name: '文章管理',
+  name: '课程列表',
   path: '/post_manage',
 };
 
