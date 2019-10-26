@@ -11,77 +11,154 @@
               </el-input>
           </el-col>
           <el-col :span="1"></el-col>
-          <el-col :span="6" type="flex" class="selectWrap">
+          <el-col :span="4" type="flex" class="selectWrap">
               <el-select 
+                  @change="getCourse"
                   placeholder="请选择状态" 
                   maxlength="20"
-                  @change="selectChange"
-                  v-model="type" 
+                  v-model="courseType" 
                   allowClear>
-                  <el-option label="全部" :value="0"/>
+                  <el-option label="全部" value=""/>
                   <el-option label="视频" :value="1"/>
                   <el-option label="音频" :value="2"/>
                   <el-option label="图文" :value="3"/>
+              </el-select>
+          </el-col>
+          <el-col :span="4" type="flex" class="selectWrap">
+              <el-select 
+                  @change="getCourse"
+                  placeholder="请选择状态" 
+                  maxlength="20"
+                  v-model="status" 
+                  allowClear>
+                  <el-option label="已上架" :value="1"/>
+                  <el-option label="已下架" :value="2"/>
               </el-select>
           </el-col>
       </el-row>
       <el-row  slot="tableArea" v-if="tableData">
           <el-table border :data="tableData.datas">
               <el-table-column
-                  align="center"
-                  prop="cardName"
-                  label="持有人">
+                type="expand">
+                <template slot-scope="{row}">
+                  <el-table border :data="row.courseVos">
+                    <el-table-column 
+                      label="课节名称" 
+                      align="center"
+                      prop="name"></el-table-column>
+                    <el-table-column 
+                      label="文件链接" 
+                      align="center"
+                      prop="url"></el-table-column>  
+                    <el-table-column 
+                      prop="url"
+                      align="center"
+                      label="操作"
+                      >
+                      <template slot-scope="{row}">
+                        <el-button type="danger" size="mini">删除</el-button>
+                        <el-button 
+                          size="mini"
+                          type="primary" 
+                          style="margin-left:10px">修改文件</el-button>
+                      </template>
+                      </el-table-column>
+                  </el-table>
+                </template>
               </el-table-column>
               <el-table-column
                   align="center"
-                  prop="cardNum"
-                  label="银行卡号">
+                  prop="name"
+                  label="课程名">
+                <template slot-scope="{row}">
+                  <span>{{row.name}}</span>
+                  <span 
+                    style="color:#3c8dbc" 
+                    v-if="row.recommendOrder">
+                    &nbsp;已推荐
+                  </span>
+                </template>  
               </el-table-column>
               <el-table-column
                   align="center"
-                  prop="createTime"
-                  label="申请时间">
-              </el-table-column>
-              <el-table-column
-                  align="center"
-                  v-if="type===3"
-                  prop="refuseRemark"
-                  label="拒绝原因">
-              </el-table-column>
-              <el-table-column
-                  align="center"
-                  prop="remark"
-                  label="提现说明">
-              </el-table-column>
-              <el-table-column
-                  align="center"
-                  prop="status"
-                  label="状态">
+                  prop="type"
+                  label="课程类型">
                   <template slot-scope="{row}">
-                      <span v-show="row.status === 1" style="color:blue;">审核中</span>
-                      <span v-show="row.status === 2" style="color:grren;">提现成功</span>
-                      <span v-show="row.status === 3" style="color:red;">提现失败</span>
+                    <span>{{row.type===1
+                              ?'视频'
+                              : row.type===2
+                              ?'音频'
+                              :'图文'}}</span>
                   </template>
               </el-table-column>
               <el-table-column
                   align="center"
+                  prop="createTime"
+                  label="购买方式">
+                  <template slot-scope="{row}">
+                    <span>{{getBuyType(row.buyTypeList)}}</span>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                  align="center"
+                  prop="isfree"
+                  label="是否免费">
+                  <template slot-scope="{row}">
+                    <span>{{row.isfree===1?'免费':'付费'}}</span>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                  align="center"
+                  prop="remark"
+                  label="单价">
+                  <template slot-scope="{row}">
+                    <span>{{getPrice(row.buyTypeList)}}</span>
+                  </template>
+              </el-table-column>
+              <el-table-column
+                  align="center"
+                  prop="keyword1"
+                  label="节数">
+              </el-table-column>
+              <el-table-column
+                  align="center"
+                  prop="keyword2"
+                  label="总时长(分钟)">
+              </el-table-column>
+              <el-table-column
+                  align="center"
+                  width="220px"
                   prop="status"
                   label="操作">
-                  <template slot-scope="{row}" v-if="row.status === 1">
+                  <template slot-scope="{row}">
                       <el-button
                           size="mini" 
-                          type="primary">通过</el-button>
+                          type="text" @click="editRow(row)">修改</el-button>
+                      <el-button
+                          v-if="row.status === 1"
+                          style="color:red"
+                          size="mini" 
+                          type="text">下架</el-button>   
+                      <el-button
+                          v-if="row.status === 2"
+                          style="color:green"
+                          size="mini" 
+                          type="text">上架</el-button>        
                       <el-button
                           size="mini" 
-                          type="danger">不通过</el-button>    
+                          type="text">添加课程节数</el-button>    
+                      <el-button
+                          style="color:red"
+                          size="mini" 
+                          type="text">删除</el-button>    
                   </template>
               </el-table-column>
           </el-table>
       </el-row>
     </Page>
     <el-dialog 
-      :visible="showAddDialog" 
-      title="新建课程" 
+      :visible="Boolean(showAddDialog)" 
+      :title="showAddDialog==='111'?'新建':'修改'" 
       @close="showAddDialog=false" 
       width="600px">
       <el-form label-width="110px" ref="addForm" :model="addDialogModel" :rules="addDialogRules">
@@ -96,13 +173,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="课程排序">
-          <el-input-number v-model="addDialogModel.courseOrder" :step="1"></el-input-number>
+          <el-input-number 
+            :min="0"
+            v-model="addDialogModel.courseOrder" 
+            :step="1"></el-input-number>
         </el-form-item>
         <el-form-item label="课程浏览量">
-          <el-input-number v-model="addDialogModel.courseView" :step="1"></el-input-number>
+          <el-input-number 
+            :min="0"
+            v-model="addDialogModel.courseView" 
+            :step="1"></el-input-number>
         </el-form-item>
         <el-form-item label="课程推荐排序">
-          <el-input-number v-model="addDialogModel.recommendOrder" :step="1"></el-input-number>
+          <el-input-number
+            :min="0" 
+            v-model="addDialogModel.recommendOrder" 
+            :step="1"></el-input-number>
         </el-form-item>
         <el-form-item label="课程介绍与描述">
           <el-input
@@ -112,32 +198,61 @@
             v-model="addDialogModel.description">
           </el-input>
         </el-form-item>
+        <el-form-item label="课程封面" prop="imgUrl">
+          <input type="file" @change="beforeFMUpload">
+          <p class="imgUrl">{{addDialogModel.imgUrl}}</p>
+          <!-- <el-upload
+            :action="`${devApiUrl}/sys/saveFile/img`"
+            :auto-upload="false"
+            :show-file-list="false"
+            :on-change="beforeFMUpload">
+            <el-button type="primary" size="mini">点击上传</el-button>
+          </el-upload> -->
+        </el-form-item>
         <el-form-item label="是否免费">
           <el-switch
+            :active-value="1"
+            :inactive-value="2"
             v-model="addDialogModel.isfree"
             active-text="免费"
             inactive-text="付费">
           </el-switch>
         </el-form-item>
-        <template v-if="!addDialogModel.isfree">
-          <el-form-item label="购买方式">
-             <el-radio-group v-model="addDialogModel.buyType">
-                <el-radio :label="1">按次购买</el-radio>
-                <el-radio :label="2">时长购买</el-radio>
-              </el-radio-group>
-          </el-form-item>
+        <template v-if="addDialogModel.isfree === 2">
+          <p class="sTitle">按次购买</p>
           <el-form-item label="购买价格" prop="buyTypeList[0].money">
-            <el-input-number v-model="addDialogModel.buyTypeList[0].money" :step="1"></el-input-number>
-            <span v-if="addDialogModel.buyType===1" class="tip">元/次</span>
-            <span v-else class="tip">元/天</span>
+            <el-input-number 
+              :min="0"
+              v-model="addDialogModel.buyTypeList[0].money" 
+              :step="1"></el-input-number>
+            <span  class="tip">元/次</span>
           </el-form-item>
           <el-form-item label="购买所得积分" prop="buyTypeList[0].integration">
-            <el-input-number v-model="addDialogModel.buyTypeList[0].integration" :step="1"></el-input-number>
+            <el-input-number 
+              :min="0"
+              v-model="addDialogModel.buyTypeList[0].integration" 
+              :step="1"></el-input-number>
+            <span class="tip">购买1个单位产品所反积分</span>
+          </el-form-item>
+          <p class="sTitle">按天购买</p>
+          <el-form-item label="购买价格" prop="buyTypeList[1].money">
+            <el-input-number
+              :min="0" 
+              v-model="addDialogModel.buyTypeList[1].money" :step="1"></el-input-number>
+            <span class="tip">元/天</span>
+          </el-form-item>
+          <el-form-item label="购买所得积分" prop="buyTypeList[1].integration">
+            <el-input-number 
+              :min="0" 
+              v-model="addDialogModel.buyTypeList[1].integration" 
+              :step="1"></el-input-number>
             <span class="tip">购买1个单位产品所反积分</span>
           </el-form-item>
         </template>
         <el-row class="btnwrap">
-          <el-button type="primary" @click="addEvt">添加</el-button>
+          <el-button type="primary" @click="addEvt">
+            {{showAddDialog==='111'?'新建':'修改'}}
+          </el-button>
         </el-row>
       </el-form>
     </el-dialog>
@@ -146,17 +261,18 @@
 </template>
 
 <script>
-import {$getPutList,$updatePut} from '@/api/index';
+import {$getCourse,$saveFile,$addOrEditCourse} from '@/api/index';
 import Page from '@/components/Page';
 
 export default {
   data(){
     return {
-      type:0,
+      courseType:"",
       key:'',
       page:1,
+      status:1,
       tableData:null,
-      showAddDialog:true,
+      showAddDialog:false,
       uploadedList:[{file:'dasdasdas.mp4',documentName:""}],
       addDialogRules:{
         name:[
@@ -171,21 +287,36 @@ export default {
             integration:[
               { required: true, message: '请输入所反积分', trigger: 'change' }
             ],
+          },
+          {
+            money:[
+              { required: true, message: '请输入单价', trigger: 'change' }
+            ],
+            integration:[
+              { required: true, message: '请输入所反积分', trigger: 'change' }
+            ],
           }
         ]
       },
       addDialogModel:{
         name:'课程名称',
         type:1,//课程类型
-        isfree:false,//是否免费
+        isfree:1,//是否免费
         courseOrder:"",//课程排序
         courseView:0,//课程浏览量
         description:'',//课程介绍与描述
         recommendOrder:"",//课程推荐排序,
         buyType:1,//购买方式
+        imgUrl:"",//课程封面
         buyTypeList:[
           {
-            money:"",//价格
+            buyTyp:1,
+            money:0,//价格
+            integration:0,//购买所得积分
+          },
+          {
+            buyTyp:2,
+            money:0,//价格
             integration:0,//购买所得积分
           }
         ]
@@ -193,15 +324,36 @@ export default {
     }
   },
   mounted(){
-
+    //获取课程列表
+    this.getCourse();
   },
   methods:{
+    //获取课程列表
+    getCourse(data){
+      const {courseType,key,page,status} = this;
+      let params = {
+        courseType,
+        key,
+        page,
+        status
+      }
+      if(data) {
+        params = {
+          ...params,
+          ...data
+        }
+      }
+      $getCourse(params).then(res =>{
+        this.tableData = res
+      })
+    },
     pageChange(page){
       this.page = page;
+      this.getCourse();
     },
     //打开上传的dialog
     showUpDialog(){
-      this.showAddDialog = true;
+      this.showAddDialog = '111';
     },
     selectChange(e) {
       console.log(e)
@@ -210,8 +362,63 @@ export default {
     addEvt(){
       const dom = this.$refs.addForm;
       dom.validate(res=> {
-
+        if(res) {
+          if(this.addDialogModel.imgUrl) {
+            let params = {
+              ...this.addDialogModel,
+              id:this.showUpDialog === '111'?'':this.showUpDialog
+            }
+            $addOrEditCourse(this.addDialogModel)
+              .then(res=> {
+                if(!res.success) return
+                this.getCourse();
+              })
+          }else {
+            this.$message.error('请上传封面');
+          }
+          console.log(this.addDialogModel)
+        }
       })
+    },
+    scopeTest(s){
+      console.log(s)
+    },
+    getPrice(list){
+      let str = '';
+      list.map(item => {
+        const _str = item.buyType == 1
+          ?` ${item.money}元/次`
+          :` ${item.money}元/天`
+          str += _str
+      })
+      return str
+    },
+    getBuyType(list){
+      let str='';
+      list.map(item => {
+        const _str = item.buyType == 1
+          ?` 按次`
+          :` 按天`
+          str += _str
+      })
+      return str
+    },
+    beforeFMUpload(e){
+      const file = e.target.files[0]
+      const formData = new FormData(); 
+      formData.append('file',file)
+      $saveFile({
+        documentName:'img',
+        file:formData
+      }).then(res=> {
+        this.addDialogModel.imgUrl = res.datas.ShowUrl
+      })
+    },
+    //修改某条信息
+    editRow(row){
+      this.showAddDialog = row.id
+      this.addDialogModel = row
+      console.log(this.addDialogModel)
     }
   },
   components:{
@@ -236,5 +443,13 @@ export default {
     button {
       width: 100%;
     }
+  }
+  .sTitle {
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .imgUrl {
+    word-break: break-all;
+    line-height: 1;
   }
 </style>
