@@ -133,13 +133,16 @@
                   <template slot-scope="{row}">
                       <el-button
                           size="mini" 
-                          type="text" @click="editRow(row)">修改</el-button>
+                          type="text" 
+                          @click="editRow(row)">修改</el-button>
                       <el-button
                           v-if="row.status === 1"
+                          @click="setCourseStatus(row.id,2)"
                           style="color:red"
                           size="mini" 
                           type="text">下架</el-button>   
                       <el-button
+                          @click="setCourseStatus(row.id,1)"
                           v-if="row.status === 2"
                           style="color:green"
                           size="mini" 
@@ -261,7 +264,7 @@
 </template>
 
 <script>
-import {$getCourse,$saveFile,$addOrEditCourse} from '@/api/index';
+import {$getCourse,$saveFile,$addOrEditCourse,$setCourseStatus} from '@/api/index';
 import Page from '@/components/Page';
 
 export default {
@@ -372,6 +375,7 @@ export default {
               .then(res=> {
                 if(!res.success) return
                 this.getCourse();
+                this.showAddDialog = false
               })
           }else {
             this.$message.error('请上传封面');
@@ -417,8 +421,48 @@ export default {
     //修改某条信息
     editRow(row){
       this.showAddDialog = row.id
-      this.addDialogModel = row
+      let buyTypeList = row.buyTypeList
+      if(row.buyTypeList.length && row.buyTypeList.length !== 2) {
+        row.buyTypeList.map(item => {
+          if(item.buyType == 1) {
+            buyTypeList.push({
+              buyTyp:2,
+              money:0,//价格
+              integration:0,//购买所得积分
+            })
+          }else {
+            buyTypeList.unshift({
+              buyTyp:1,
+              money:0,//价格
+              integration:0,//购买所得积分
+            })
+          }
+        })
+      }
+      if(!row.buyTypeList.length) {
+        buyTypeList = [
+          {
+            buyTyp:1,
+            money:0,//价格
+            integration:0,//购买所得积分
+          },
+          {
+            buyTyp:2,
+            money:0,//价格
+            integration:0,//购买所得积分
+          }
+        ]
+      }
+      console.log(row)
+      this.addDialogModel = {
+        ...row,
+        buyTypeList
+      }
       console.log(this.addDialogModel)
+    },
+    //修改上架下架状态
+    setCourseStatus(id,status){
+      $setCourseStatus(id,status)
     }
   },
   components:{

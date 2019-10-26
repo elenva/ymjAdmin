@@ -88,3 +88,11 @@ export function $addOrEditCourse(data){
         data
     })
 }
+
+//设置课程上架下架
+export function $setCourseStatus(id,status){
+    return request({
+        url:`/sys/course/setCourseStatus/${id}?status=${status}`,
+        method:'post'
+    })
+}
