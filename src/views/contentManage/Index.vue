@@ -84,8 +84,8 @@
       title="新建课程" 
       @close="showAddDialog=false" 
       width="600px">
-      <el-form label-width="110px" ref="form" :model="addDialogModel">
-        <el-form-item label="课程名称">
+      <el-form label-width="110px" ref="addForm" :model="addDialogModel" :rules="addDialogRules">
+        <el-form-item label="课程名称" prop="name">
           <el-input v-model="addDialogModel.name"></el-input>
         </el-form-item>
         <el-form-item label="课程类型">
@@ -126,18 +126,18 @@
                 <el-radio :label="2">时长购买</el-radio>
               </el-radio-group>
           </el-form-item>
-          <el-form-item label="购买价格">
+          <el-form-item label="购买价格" prop="buyTypeList[0].money">
             <el-input-number v-model="addDialogModel.buyTypeList[0].money" :step="1"></el-input-number>
             <span v-if="addDialogModel.buyType===1" class="tip">元/次</span>
             <span v-else class="tip">元/天</span>
           </el-form-item>
-          <el-form-item label="购买所得积分">
+          <el-form-item label="购买所得积分" prop="buyTypeList[0].integration">
             <el-input-number v-model="addDialogModel.buyTypeList[0].integration" :step="1"></el-input-number>
             <span class="tip">购买1个单位产品所反积分</span>
           </el-form-item>
         </template>
         <el-row class="btnwrap">
-          <el-button type="primary">添加</el-button>
+          <el-button type="primary" @click="addEvt">添加</el-button>
         </el-row>
       </el-form>
     </el-dialog>
@@ -158,6 +158,22 @@ export default {
       tableData:null,
       showAddDialog:true,
       uploadedList:[{file:'dasdasdas.mp4',documentName:""}],
+      addDialogRules:{
+        name:[
+          { required: true, message: '请输入课程名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ],
+        buyTypeList:[
+          {
+            money:[
+              { required: true, message: '请输入单价', trigger: 'change' }
+            ],
+            integration:[
+              { required: true, message: '请输入所反积分', trigger: 'change' }
+            ],
+          }
+        ]
+      },
       addDialogModel:{
         name:'课程名称',
         type:1,//课程类型
@@ -170,7 +186,7 @@ export default {
         buyTypeList:[
           {
             money:"",//价格
-            integration:"",//购买所得积分@
+            integration:0,//购买所得积分
           }
         ]
       }
@@ -189,10 +205,17 @@ export default {
     },
     selectChange(e) {
       console.log(e)
+    },
+    //添加事件
+    addEvt(){
+      const dom = this.$refs.addForm;
+      dom.validate(res=> {
+
+      })
     }
   },
   components:{
-      Page
+    Page
   }
 }
 </script>
