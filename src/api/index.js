@@ -58,3 +58,41 @@ export function $updatePut(params){
         data:params
     })
 } 
+
+//分页条件查询课程列表
+export function $getCourse(params){
+    const paramsSting = qs.stringify(params);
+    return request({
+        url:`/sys/course/getCourse?${paramsSting}`,
+        method:'post'
+    })
+}
+
+//保存文件
+export function $saveFile(params){
+    return request({
+        url:`/sys/saveFile/${params.documentName}`,
+        method:'post',
+        data:params.file,
+        headers:{
+            'Content-Type':'multipart/form-data'
+        }
+    })
+}
+
+//添加课程
+export function $addOrEditCourse(data){
+    return request({
+        url:`/sys/course/createCourse`,
+        method:'post',
+        data
+    })
+}
+
+//设置课程上架下架
+export function $setCourseStatus(id,status){
+    return request({
+        url:`/sys/course/setCourseStatus/${id}?status=${status}`,
+        method:'post'
+    })
+}
