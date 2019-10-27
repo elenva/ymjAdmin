@@ -55,12 +55,12 @@
                       align="center"
                       label="操作"
                       >
-                      <template slot-scope="{row}">
-                        <el-button type="danger" size="mini">删除</el-button>
+                      <template slot-scope="scope">
+                        <el-button type="danger" size="mini" @click="deleteNode(scope.row,row)">删除</el-button>
                         <el-button 
                           size="mini"
                           type="primary" 
-                          style="margin-left:10px">修改文件</el-button>
+                          style="margin-left:10px" @click="editNode(scope.row,row)">修改文件</el-button>
                       </template>
                       </el-table-column>
                   </el-table>
@@ -148,11 +148,13 @@
                           size="mini" 
                           type="text">上架</el-button>        
                       <el-button
-                          size="mini" 
+                          size="mini"
+                          @click="addNode(row)" 
                           type="text">添加课程节数</el-button>    
                       <el-button
                           style="color:red"
                           size="mini" 
+                          @click="deleteRow(row)"
                           type="text">删除</el-button>    
                   </template>
               </el-table-column>
@@ -259,6 +261,24 @@
         </el-row>
       </el-form>
     </el-dialog>
+    <el-dialog
+      @close="courseVos=null"
+      v-if="Boolean(courseVos)"
+      :title="!courseVos.name?'添加课节':`修改《${courseVos.name}》`"
+      :visible="Boolean(courseVos)">
+        <el-form :rules="courseVosRules" :model="courseVos" ref="courseVosForm">
+          <el-form-item label="课节名称" prop="name">
+            <el-input v-model="courseVos.name"></el-input>
+          </el-form-item>
+          <el-form-item label="课节文件">
+            <input type="file" @change="beforeKJUpload"/>
+            <p v-if="courseVos.url">{{courseVos.url}}</p>
+          </el-form-item>
+          <el-row>
+            <el-button type="primary" @click="addcourseVos">添加</el-button>
+          </el-row>
+        </el-form>
+    </el-dialog>
   </div>
     
 </template>
@@ -270,6 +290,14 @@ import Page from '@/components/Page';
 export default {
   data(){
     return {
+      currentNode:null,//当前被选中的行
+      courseVos:null,//课节
+      courseVosRules:{
+        name:[
+          { required: true, message: '请输入课程名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
+      },
       courseType:"",
       key:'',
       page:1,
@@ -453,16 +481,112 @@ export default {
           }
         ]
       }
-      console.log(row)
       this.addDialogModel = {
         ...row,
         buyTypeList
       }
-      console.log(this.addDialogModel)
     },
     //修改上架下架状态
     setCourseStatus(id,status){
-      $setCourseStatus(id,status)
+      $setCourseStatus(id,status).then(res=> {
+        if(res.success) {
+          this.$message({
+            type: 'success',
+            message: '操作成功!'
+          });
+          this.getCourse()
+        }
+      })
+    },
+    //删除一个课程
+    deleteRow(row){
+      this.$confirm(`此操作将永久删除《${row.name}》, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        this.setCourseStatus(row.id,0)
+      })
+    },
+    //添加课程节数
+    addNode(row) {
+      console.log(row)
+      this.currentNode = row;
+      this.courseVos = {
+        name:'',
+        url:'',
+        courseVos:[],
+        type:row.type
+      }
+    },
+    //获取对象类型
+    getObjType(obj){
+      return Object.prototype.toString.call(obj);
+    },
+    //课节文件上传
+    beforeKJUpload(e){
+      const tp = ['video','audio','img'];
+      const file = e.target.files[0]
+      const formData = new FormData(); 
+      formData.append('file',file)
+      $saveFile({
+        documentName:tp[this.courseVos.type-1],
+        file:formData
+      }).then(res=> {
+        this.$set(this.courseVos,'url',res.datas.ShowUrl)
+      })
+    },
+    //添加课节
+    addcourseVos(){
+      this.$refs.courseVosForm.validate(res=> {
+        if(res) {
+          if(!this.courseVos.url) {
+            this.$message.error(`课节文件不可为空`);
+          }else {
+            const currentNode = this.currentNode;
+            const courseVos = currentNode.courseVos;
+            courseVos.push(this.courseVos);
+            this.$set(this.currentNode,'courseVos',courseVos)
+            $addOrEditCourse(currentNode)
+              .then(res=> {
+                if(!res.success) return
+                this.getCourse();
+                this.currentNode = null
+                this.courseVos = null
+              })
+          }
+        }
+      })
+    },
+    //编辑课节
+    editNode(n,row) {
+      console.log(n)
+      this.courseVos = n
+      this.currentNode = row
+    },
+    //删除课节
+    deleteNode(n,row){
+      this.currentNode = row
+      const courseVos = row.courseVos;
+      const idx = courseVos.findIndex(item => item.id === n.id)
+      this.$confirm(`此操作将永久删除《${n.name}》, 是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        courseVos.splice(idx,1);
+      this.$set(this.currentNode,'courseVos',courseVos);
+      $addOrEditCourse(this.currentNode)
+        .then(res=> {
+          if(!res.success) return
+          this.getCourse();
+          this.currentNode = null
+          this.courseVos = null
+          this.$message.success(`删除成功`)
+        })
+      })
     }
   },
   components:{
