@@ -198,9 +198,20 @@
             },
             //删除优惠券
             del(row) {
-                $delCoupon(row.id).then(res=> {
-                    this.getCoupons({page:1});
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    $delCoupon(row.id).then(res=> {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getCoupons({page:1});
+                    })
                 })
+                
             },
             //把优惠券发送给用户
             send(row) {

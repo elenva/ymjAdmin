@@ -30,6 +30,11 @@
                 </el-table-column>
                 <el-table-column
                     align="center"
+                    prop="extractNum"
+                    label="提现金额">
+                </el-table-column>
+                <el-table-column
+                    align="center"
                     prop="cardNum"
                     label="银行卡号">
                 </el-table-column>
