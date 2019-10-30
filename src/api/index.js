@@ -105,3 +105,12 @@ export function $addAgent(data){
         data
     })
 }
+
+//查询代理相关用户
+export function $getAgentUsers(data){
+    return request({
+        url:`/sys/permission/getUser`,
+        method:'post',
+        data
+    }) 
+}
