@@ -96,3 +96,12 @@ export function $setCourseStatus(id,status){
         method:'post'
     })
 }
+
+//添加一个代理
+export function $addAgent(data){
+    return request({
+        url:`/sys/permission/addUser`,
+        method:'post',
+        data
+    })
+}

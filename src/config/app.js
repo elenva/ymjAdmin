@@ -1,7 +1,7 @@
 import localKey from './localKey'
 
-// const devApiUrl = 'http://gj26975614.wicp.vip:11842';//本地开发环境
-const devApiUrl = 'http://www.miaomuxia.com:81';//本地开发环境
+const devApiUrl = 'http://rz27513550.qicp.vip:57026';//本地开发环境
+// const devApiUrl = 'http://www.miaomuxia.com:81';//本地开发环境
 const buildDevApiUrl = 'http://192.168.1.92:9088';//打包开发环境
 const buildTestApiUrl = 'http://192.168.1.92:6906';//打包测试环境
 const buildProApiUrl = 'http://www.miaomuxia.com:81';//打包正式环境
