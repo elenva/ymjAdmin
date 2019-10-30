@@ -100,6 +100,22 @@ PutManage.user = {
 };
 
 
+/**
+ * 代理管理
+ * @type {{name: string, icon: string, children: {}}}
+ */
+menu.agent = {
+  name: '代理管理',
+  icon: 'fa fa-user-circle-o',
+  children: {}
+};
+let AgentManage = menu.agent.children;
+
+AgentManage.user = {
+  name: '代理管理',
+  path: '/agent',
+};
+
 
 
 /**

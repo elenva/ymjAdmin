@@ -79,6 +79,15 @@ let RouteList = [
         component: resolve => require(['@/views/put/put.vue'], resolve),
       },
       {
+        path: '/agent',
+        name: 'Agent',
+        meta: {
+          title: '代理管理',
+          keepAlive: true
+        },
+        component: resolve => require(['@/views/agent/agent.vue'], resolve),
+      },
+      {
         path: '/category_manage',
         name: 'CategoryManage',
         meta: {
