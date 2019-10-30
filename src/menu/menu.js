@@ -72,7 +72,7 @@ UserManage.user = {
  */
 menu.coupons = {
   name: '优惠券管理',
-  icon: 'fa fa-user-circle-o',
+  icon: 'el-icon-goods',
   children: {}
 };
 let CouponsManage = menu.coupons.children;
@@ -89,7 +89,7 @@ CouponsManage.user = {
  */
 menu.put = {
   name: '提现管理',
-  icon: 'fa fa-user-circle-o',
+  icon: 'el-icon-download',
   children: {}
 };
 let PutManage = menu.put.children;
@@ -106,7 +106,7 @@ PutManage.user = {
  */
 menu.agent = {
   name: '代理管理',
-  icon: 'fa fa-user-circle-o',
+  icon: 'el-icon-news',
   children: {}
 };
 let AgentManage = menu.agent.children;
@@ -115,8 +115,6 @@ AgentManage.user = {
   name: '代理管理',
   path: '/agent',
 };
-
-
 
 /**
  * 分类管理

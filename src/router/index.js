@@ -87,6 +87,16 @@ let RouteList = [
         },
         component: resolve => require(['@/views/agent/agent.vue'], resolve),
       },
+      //编辑发送个人报告
+      {
+        path: '/report',
+        name: 'report',
+        meta: {
+          title: '代理管理',
+          keepAlive: true
+        },
+        component: resolve => require(['@/views/report/report.vue'], resolve),
+      },
       {
         path: '/category_manage',
         name: 'CategoryManage',

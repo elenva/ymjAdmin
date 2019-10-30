@@ -47,9 +47,16 @@
                             align="center"
                             label="代理登陆帐号"></el-table-column>
                         <el-table-column
-                            prop="password"
+                            prop="id"
                             align="center"
-                            label="代理登陆密码"></el-table-column>
+                            label="操作">
+                            <template slot-scope="{row}">
+                                <el-button
+                                    @click="report(row)" 
+                                    size="mini" 
+                                    type="primary">发送个人报告</el-button>
+                            </template>
+                            </el-table-column>
                     </el-table>
                 </el-row>
             </el-row >
@@ -148,7 +155,7 @@ export default {
         getAgentUsers(){
             const params = {
                 roleId:1,
-                openId:111
+                openId:"1111"
             }
             $getAgentUsers(params).then(res=> {
                 this.agentUsers = res.datas;
@@ -184,6 +191,7 @@ export default {
 
                 $addAgent(requstParam).then(res=> {
                     if(res.success) {
+                        this.getAgentUsers();
                         this.$refs.addAgentForm.resetFields();
                         this.showAddDialog =false
                     }
@@ -197,6 +205,11 @@ export default {
             this.addDialogModel.nickName = item.name;
             this.addDialogModel.openId = item.openId;
             this.$forceUpdate();
+        },
+        //发送个人报告
+        report(row){
+            console.log(row)
+            this.$router.push(`/report`);
         }
     }
 }
