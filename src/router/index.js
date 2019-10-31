@@ -92,7 +92,7 @@ let RouteList = [
         path: '/report',
         name: 'report',
         meta: {
-          title: '代理管理',
+          title: '报告管理',
           keepAlive: true
         },
         component: resolve => require(['@/views/report/report.vue'], resolve),

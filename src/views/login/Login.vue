@@ -8,7 +8,7 @@
       <el-input
           placeholder="请输入用户名"
           suffix-icon="fa fa-user"
-          v-model="userNmae"
+          v-model="username"
           style="margin-bottom: 18px"
       >
       </el-input>
@@ -30,8 +30,8 @@
       >登录
       </el-button>
       <div>
-        <el-checkbox v-model="Remenber"> Remenber</el-checkbox>
-        <a href="javascript:;" style="float: right;color: #3C8DBC;font-size: 14px">Register</a>
+        <!-- <el-checkbox v-model="Remenber"> Remenber</el-checkbox> -->
+        <!-- <a href="javascript:;" style="float: right;color: #3C8DBC;font-size: 14px">Register</a> -->
       </div>
 
     </div>
@@ -40,12 +40,12 @@
 
 <script>
   import {setToken} from '../../utils/dataStorage'
-  import {login as loginApi} from '../../api/demo'
+  import {$login} from '@/api/index.js'
 
   export default {
     data() {
       return {
-        userNmae: '',
+        username: '',
         password: '',
         Remenber: true,
         loginLoading: false
@@ -53,18 +53,21 @@
     },
     methods: {
       login() {
+        const {username,password} = this;
         this.loginLoading = true;
         //loginApi({userNmae:this.userNmae,password:this.password}).then(r=>{}).catch(_=>{})
-        setTimeout(() => {
-          setToken('123456789');
-          this.$notify({
-            title: '登录成功',
-            message: '很高兴你使用ElementUIAdmin！别忘了给个Star哦。',
-            type: 'success'
-          });
+        $login({username,password}).then(res=> {
           this.loginLoading = false;
-          this.$router.push({path: '/'});
-        }, 1000);
+          if(res.success) {
+            this.$store.commit("setUserInfo",res.datas)
+            this.$router.push({path:"/"})
+            this.$notify({
+              title: '登录成功',
+              message: "",
+              type: 'success'
+            });
+          }
+        })
       }
     }
   }

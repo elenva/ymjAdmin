@@ -8,20 +8,37 @@ import {isLogin} from './utils/dataStorage'
 import App from './App.vue'
 import '@/components/component.js';
 
+import VueQuillEditor from 'vue-quill-editor'
+
+// require styles
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+Vue.use(VueQuillEditor, /* { default global options } */)
+
 
 Vue.prototype.$Config = Config;
 
 Vue.use(ElementUI)
 
+window.addEventListener('beforeunload', e => {
+  sessionStorage.setItem('state', JSON.stringify(store.state));
+});
+
 router.beforeEach((to, from, next) => {
   window.document.title = to.meta.title ? to.meta.title + '-' + Config.siteName : Config.siteName;
-
-  if (!isLogin() && to.path != '/login') {
-    next({path: '/login'});
-  } else {
-    next();
+  if(to.path === "/login") {
+    next()
+  }else{
+    if(!store.state.userInfo) {
+      next("/login")
+    }else{
+      next()
+    }
   }
 });
+
 router.afterEach(transition => {
 
 });

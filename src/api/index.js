@@ -106,7 +106,7 @@ export function $addAgent(data){
     })
 }
 
-//查询代理相关用户
+//查询代理用户
 export function $getAgentUsers(data){
     return request({
         url:`/sys/permission/getUser`,
@@ -114,3 +114,52 @@ export function $getAgentUsers(data){
         data
     }) 
 }
+
+//查询该代理下普通用户
+export function $getUserByAgent(openId){
+    return request({
+        url:`/invite/getInviteByOpenId/${openId}`,
+    })
+}
+//登录
+export function $login(data){
+    return request({
+        url:`/sys/login`,
+        method:'post',
+        data
+    }) 
+}
+
+// 授权课程给用户
+export function $authorizeCourseToUser(data){
+    return request({
+        url:`/sys/course/authorizeCourseToUser`,
+        method:'post',
+        data
+    }) 
+}
+
+
+//查询某用户已授权的课程
+export function $authedCourse(openId){
+    return request({
+        url:`/course/getCoursePlayHis/${openId}?status=3`,
+    }) 
+}
+
+//获取用户报告
+export function $getReport(openId){
+    return request({
+        url:`/report/getReportByOpenId/${openId}`,
+    }) 
+}
+
+// 添加报告
+export function $addReport(data){
+    return request({
+        url:`/sys/addReport`,
+        method:'post',
+        data
+    }) 
+}
+
