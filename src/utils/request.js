@@ -74,7 +74,7 @@ service.interceptors.response.use(
         }
     },
     error => {
-        console.log(error)
+
         setTimeout(_=>{
             window.loadingInstance.close();
         },300)

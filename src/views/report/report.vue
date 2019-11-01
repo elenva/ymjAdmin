@@ -13,7 +13,7 @@
                 <el-row class="tableWrap">
                     <el-table :data="list">
                         <el-table-column label="发送时间" prop="createTime" align="center"/>
-                        <el-table-column label="标题" prop="createTime" align="center"/>
+                        <el-table-column label="标题" prop="title" align="center"/>
                         <el-table-column label="操作" prop="createTime" align="center">
                             <template slot-scope="{row}">
                                 <el-button type="text" @click="preview(row)">内容预览</el-button>
@@ -28,8 +28,11 @@
             title="添加报告"
             @close="addDialogClose"
             :visible="showAddDialog">
+            <el-row class="titleWrap">
+                <el-input v-model="title" placeholder="请输入标题" :disabled="previewFlag"></el-input>
+            </el-row>
             <el-row>
-                <quillEditor v-model="content" :options="editorOption" style="height:300px;"/>
+                <quillEditor v-model="content" :options="editorOption" style="height:500px;" :disabled="previewFlag"/>
             </el-row>
             
             <el-row class="btnWrap" >
@@ -46,6 +49,7 @@
         components:{quillEditor},
         data(){
             return {
+                title:'',
                 previewFlag:false,
                 showAddDialog:false,
                 content:"",
@@ -79,11 +83,16 @@
                 this.showAddDialog=true
             },
             addReport(){
-                if(!this.content) return;
+                if(!this.content || !this.title) {
+                    this.$message.warning(`标题或者内容不可为空！`)
+                    return
+                }
+
                 const params = {
                     content:this.content,
                     openId:this.info.toInviter,
-                    sysOpenId:this.userInfo.openId || ''
+                    sysOpenId:this.userInfo.openId || '',
+                    title:this.title
                 }
                 $addReport(params).then(res=> {
                     if(res.success) {
@@ -106,6 +115,9 @@
 </script>
 
 <style lang="scss" scoped>
+    .titleWrap {
+        margin-bottom: 20px;
+    }
     .tableWrap {
         margin-top: 20px;
     }

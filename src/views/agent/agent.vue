@@ -54,7 +54,7 @@
                                 @expand-change="expandChange">
                                 <el-table-column type="expand">
                                     <template slot-scope="{row}">
-                                        <p>已授权课程</p>
+                                        <p v-if="row.children && row.children.length">已授权课程</p>
                                         <el-row class="userlist" :gutter="5" v-if="row.children && row.children.length">
                                             <el-col
                                                 class="useritem" 
@@ -70,7 +70,7 @@
                                     </template>
                                 </el-table-column>
                                 <el-table-column 
-                                    align="center"
+                                    align="left"
                                     prop="toInviterName"
                                     label="微信昵称">
                                     <template slot-scope="{row}">

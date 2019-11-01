@@ -1,8 +1,8 @@
 import '@/assets/js/oss/oss-sdk';
 import '@/assets/js/oss/upload-sdk';
-import axios from 'axios';
+import request from '../utils/request.js'
 import store from '@/store'
-axios.defaults.baseURL = '/';
+
 export const initUploader = (that)=> {
     return new AliyunUpload.Vod({
         //阿里账号ID，必须有值 ，值的来源https://help.aliyun.com/knowledge_detail/37196.html
@@ -26,6 +26,9 @@ export const initUploader = (that)=> {
             }
             else{
                 // 如果 uploadInfo.videoId 不存在,调用 获取视频上传地址和凭证接口(https://help.aliyun.com/document_detail/55407.html)
+                request({
+                    
+                })
                 axios.post(`wx/video/sts/get`,{
                     title:uploadInfo.file.name.split('.')[0],
                     fileName:uploadInfo.file.name,

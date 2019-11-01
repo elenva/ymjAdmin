@@ -1,5 +1,8 @@
-import request from '../utils/request.js'
+import request from '../utils/request.js';
+import ElementUI from 'element-ui'
 import qs from 'qs';
+
+const {Message} = ElementUI;
 
 //获取优惠券列表
 export function $getCoupons(params) {
@@ -69,15 +72,54 @@ export function $getCourse(params){
 }
 
 //保存文件
-export function $saveFile(params){
-    return request({
-        url:`/sys/saveFile/${params.documentName}`,
-        method:'post',
-        data:params.file,
-        headers:{
-            'Content-Type':'multipart/form-data'
+export function $saveFile(path,file){
+    
+    return new Promise((OK,Fail) => {
+
+        if(path === 'video' && file.type !== 'video/mp4'){
+            Message.warning(`视频格式限定为 video/mp4`);
+            Fail()
+            return;
         }
+        if(path === 'img' && (file.type !== 'image/jpeg' && file.type !== 'image/png')){
+            Message.warning(`图片格式限定为 image/jpeg 或 image/png`);
+            Fail()
+            return;
+        }
+        if(path === 'audio' && file.type !== 'audio/mp3') {
+            Message.warning(`音频格式限定为 audio/mp3`);
+            Fail()
+            return;
+        }
+
+        const formData = new FormData();
+
+        $getOssInfo(path).then(res=> {
+            const info = res.datas;
+            const key = info.dir+ '/' + file.lastModified + file.name
+            formData.append('key',key )
+            formData.append('name',file.name)
+            formData.append('policy', info.policy)
+            formData.append('OSSAccessKeyId',info.accessKeyId)
+            formData.append('success_action_status','200')
+            formData.append('signature',info.signature)
+            formData.append('file',file)
+            request({
+                url:info.host,
+                method:'post',
+                data:formData,
+                headers:{
+                    'Content-Type':'multipart/form-data'
+                }
+            }).then(res=> {
+                OK(key)
+            }).catch(res => {
+                Message.error(`上传失败！`)
+                Fail();
+            })
+        })  
     })
+    
 }
 
 //添加课程
@@ -162,4 +204,14 @@ export function $addReport(data){
         data
     }) 
 }
+
+//根据文件夹获取对应的oss信息
+export function $getOssInfo(documentName){
+    return request({
+        url:`/sys/getOssToken/${documentName}`,
+        method:'post',
+    }) 
+}
+// 
+// oss 获取上传凭证
 

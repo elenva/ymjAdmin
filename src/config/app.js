@@ -1,6 +1,7 @@
 import localKey from './localKey'
-
-const devApiUrl = 'http://rz27513550.qicp.vip:57026';//本地开发环境
+// 192.168.88.18:81
+// const devApiUrl = 'http://rz27513550.qicp.vip:57026';//本地开发环境
+const devApiUrl = 'http://192.168.88.18:81';//本地开发环境
 // const devApiUrl = 'http://www.miaomuxia.com:81';//本地开发环境
 const buildDevApiUrl = 'http://192.168.1.92:9088';//打包开发环境
 const buildTestApiUrl = 'http://192.168.1.92:6906';//打包测试环境
@@ -30,7 +31,7 @@ export default {
   siteName: '虞美家管理后台',
   minSiteMame: '虞美家',
   apiPrefix: "",
-  timeout: 120000,
+  timeout: 1200000,
   cookiesExpires: 7,
   requestRetry: 4,
   requestRetryDelay: 800,

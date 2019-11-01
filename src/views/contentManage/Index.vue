@@ -215,7 +215,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="课程封面" prop="imgUrl">
-          <input type="file" @change="beforeFMUpload">
+          <input type="file" @change="beforeFMUpload" id="fmInput">
           <p class="imgUrl">{{addDialogModel.imgUrl}}</p>
           <!-- <el-upload
             :action="`${devApiUrl}/sys/saveFile/img`"
@@ -300,7 +300,7 @@
             <span class="tip">输入0表示不可试看该节</span>
           </el-form-item>
           <el-form-item label="课节文件">
-            <input type="file" @change="beforeKJUpload"/>
+            <input type="file" @change="beforeKJUpload" id="kjInput"/>
             <p v-if="courseVos.url">{{courseVos.url}}</p>
           </el-form-item>
           <el-row>
@@ -313,9 +313,10 @@
 </template>
 
 <script>
-import {$getCourse,$saveFile,$addOrEditCourse,$setCourseStatus} from '@/api/index';
+import {$getCourse,$saveFile,$addOrEditCourse,$setCourseStatus,$getOssInfo} from '@/api/index';
 import { mapState } from 'vuex'
 import Page from '@/components/Page';
+import OSS from 'ali-oss';
 
 export default {
   data(){
@@ -503,13 +504,9 @@ export default {
     },
     beforeFMUpload(e){
       const file = e.target.files[0]
-      const formData = new FormData(); 
-      formData.append('file',file)
-      $saveFile({
-        documentName:'img',
-        file:formData
-      }).then(res=> {
-        this.addDialogModel.imgUrl = res.datas
+      $saveFile('img',file).catch(res=> {
+        const dom = document.querySelector("#fmInput");
+        dom.value = null;
       })
     },
     //修改某条信息
@@ -605,13 +602,10 @@ export default {
     beforeKJUpload(e){
       const tp = ['video','audio','img'];
       const file = e.target.files[0]
-      const formData = new FormData(); 
-      formData.append('file',file)
-      $saveFile({
-        documentName:tp[this.courseVos.type-1],
-        file:formData
-      }).then(res=> {
-        this.$set(this.courseVos,'url',res.datas)
+      console.log(tp[this.courseVos.type-1])
+      $saveFile(tp[this.courseVos.type-1],file).catch(res=> {
+        const dom = document.querySelector("#kjInput");
+        dom.value = null;
       })
     },
     //添加课节
