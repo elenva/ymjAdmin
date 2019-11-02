@@ -1,3 +1,5 @@
+import store from '@/store';
+console.log(store.state)
 let menu = {};
 
 /**
@@ -36,68 +38,71 @@ menu.home = {
  * 内容管理
  * @type {{name: string, icon: string, children: {}}}
  */
-menu.content_manage = {
-  name: '课程管理',
-  icon: 'fa fa-file-text-o',
-  children: {}
-};
-
-let ContentManage = menu.content_manage.children;
-
-ContentManage.post = {
-  name: '课程列表',
-  path: '/post_manage',
-};
-
-/**
- * 用户管理
- * @type {{name: string, icon: string, children: {}}}
- */
-menu.user_manage = {
-  name: '用户管理',
-  icon: 'fa fa-user-circle-o',
-  children: {}
-};
-let UserManage = menu.user_manage.children;
-
-UserManage.user = {
-  name: '用户列表',
-  path: '/user_manage',
-};
-
-
-/**
- * 优惠券管理
- * @type {{name: string, icon: string, children: {}}}
- */
-menu.coupons = {
-  name: '优惠券管理',
-  icon: 'el-icon-goods',
-  children: {}
-};
-let CouponsManage = menu.coupons.children;
-
-CouponsManage.user = {
-  name: '优惠券',
-  path: '/coupons',
-};
-
-
-/**
- * 提现管理
- * @type {{name: string, icon: string, children: {}}}
- */
-menu.put = {
-  name: '提现管理',
-  icon: 'el-icon-download',
-  children: {}
-};
-let PutManage = menu.put.children;
-
-PutManage.user = {
-  name: '提现管理',
-  path: '/put',
-};
+if(store.state.userInfo.roleId === 1){
+  menu.content_manage = {
+    name: '课程管理',
+    icon: 'fa fa-file-text-o',
+    children: {}
+  };
+  
+  let ContentManage = menu.content_manage.children;
+  
+  ContentManage.post = {
+    name: '课程列表',
+    path: '/post_manage',
+  };
+  
+  /**
+   * 用户管理
+   * @type {{name: string, icon: string, children: {}}}
+   */
+  menu.user_manage = {
+    name: '用户管理',
+    icon: 'fa fa-user-circle-o',
+    children: {}
+  };
+  let UserManage = menu.user_manage.children;
+  
+  UserManage.user = {
+    name: '用户列表',
+    path: '/user_manage',
+  };
+  
+  
+  /**
+   * 优惠券管理
+   * @type {{name: string, icon: string, children: {}}}
+   */
+  menu.coupons = {
+    name: '优惠券管理',
+    icon: 'el-icon-goods',
+    children: {}
+  };
+  let CouponsManage = menu.coupons.children;
+  
+  CouponsManage.user = {
+    name: '优惠券',
+    path: '/coupons',
+  };
+  
+  
+  /**
+   * 提现管理
+   * @type {{name: string, icon: string, children: {}}}
+   */
+  menu.put = {
+    name: '提现管理',
+    icon: 'el-icon-download',
+    children: {}
+  };
+  let PutManage = menu.put.children;
+  
+  PutManage.user = {
+    name: '提现管理',
+    path: '/put',
+  };
+  
+}
 
 
 /**

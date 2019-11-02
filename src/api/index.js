@@ -108,11 +108,12 @@ export function $saveFile(path,file){
                 url:info.host,
                 method:'post',
                 data:formData,
+                closeLoading:true,
                 headers:{
                     'Content-Type':'multipart/form-data'
                 }
             }).then(res=> {
-                OK(key)
+                OK(info.host + `/` + key)
             }).catch(res => {
                 Message.error(`上传失败！`)
                 Fail();

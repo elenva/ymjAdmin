@@ -403,10 +403,10 @@ export default {
     }
   },
   computed:{
-    ...mapState({
-      baseCourse:"baseCourse"
-    })
-
+    baseCourse(){
+      const state = this.$store.state;
+      return state.baseCourse;
+    }
   },
   mounted(){
     //获取课程列表
@@ -462,7 +462,7 @@ export default {
           if(this.addDialogModel.imgUrl) {
             let params = {
               ...this.addDialogModel,
-              id:this.showUpDialog === '111'?'':this.showUpDialog,
+              id:!this.showAddDialog?'':this.showAddDialog,
               courseTypeStr:this.addDialogModel.courseTypeList.join(','),//服务器存储课程类别的字符串
               courseTypeId:this.addDialogModel.courseTypeList[this.addDialogModel.courseTypeList.length-1],//服务器存储课程类别的id
             }
@@ -504,13 +504,16 @@ export default {
     },
     beforeFMUpload(e){
       const file = e.target.files[0]
-      $saveFile('img',file).catch(res=> {
+      $saveFile('img',file).then(res=> {
+        this.addDialogModel.imgUrl = res
+      }).catch(res=> {
         const dom = document.querySelector("#fmInput");
         dom.value = null;
       })
     },
     //修改某条信息
     editRow(row){
+      console.log(row)
       this.showAddDialog = row.id
       let buyTypeList = row.buyTypeList
       let courseTypeList = [];
@@ -559,7 +562,6 @@ export default {
         buyTypeList,
         courseTypeList
       }
-      console.log(this.addDialogModel)
     },
     //修改上架下架状态
     setCourseStatus(id,status){
@@ -602,8 +604,10 @@ export default {
     beforeKJUpload(e){
       const tp = ['video','audio','img'];
       const file = e.target.files[0]
-      console.log(tp[this.courseVos.type-1])
-      $saveFile(tp[this.courseVos.type-1],file).catch(res=> {
+
+      $saveFile(tp[this.courseVos.type-1],file).then(res=> {
+        this.courseVos.url = res
+      }).catch(res=> {
         const dom = document.querySelector("#kjInput");
         dom.value = null;
       })

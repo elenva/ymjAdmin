@@ -35,7 +35,11 @@
                                 <el-table-column 
                                     align="center"
                                     prop="province"
-                                    label="代理区域"></el-table-column>
+                                    label="代理区域">
+                                    <template slot-scope="{row}">
+                                        <span>{{row.province}} {{row.city}} {{row.county}}</span>
+                                    </template>
+                                    </el-table-column>
                                 <el-table-column 
                                     prop="county"
                                     align="center"
@@ -190,7 +194,7 @@ export default {
             coursName:"",
             coursList:null,
             showAuthDialog:false,
-            agentLevel:["超级管理员",'升级代理','市级代理','区/县代理'],//代理级别枚举
+            agentLevel:["超级管理员",'省级代理','市级代理','区/县代理'],//代理级别枚举
             usersByAgentList:[],//普通用户列表
             agentUsers:[],//获取到的列表数据
             nickName:"",
@@ -225,14 +229,14 @@ export default {
         //查询代理用户列表
         getAgentUsers(){
             const {openId,roleId} = this.$store.state.userInfo
-            // const params = {
-            //     roleId,
-            //     openId:openId || ''
-            // }
             const params = {
-                roleId:1,
-                openId:1111
+                roleId,
+                openId:openId || ''
             }
+            // const params = {
+            //     roleId:1,
+            //     openId:1111
+            // }
             $getAgentUsers(params).then(res=> {
                 this.agentUsers = res.datas;
             })

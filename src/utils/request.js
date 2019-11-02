@@ -15,7 +15,6 @@ service.defaults.retryDelay = Config.requestRetryDelay;
 
 service.interceptors.request.use(
     config => {
-
         if(!config.closeLoading){
             window.loadingInstance = Loading.service();
         }
@@ -44,7 +43,8 @@ service.interceptors.response.use(
         }
 
         const res = response
-        if (!res.data.success) {
+
+        if (!res.data.success && !res.config.closeLoading) {
             Notification({
                 title:'数据返回出错',
                 message:res.data.msg,

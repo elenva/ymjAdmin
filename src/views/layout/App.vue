@@ -65,17 +65,17 @@
           </el-dropdown-menu>
         </el-dropdown>
 
-        <span class="header-btn">
+        <!-- <span class="header-btn">
             <el-badge :value="3" class="badge">
                     <i class="el-icon-bell"></i>
             </el-badge>
-        </span>
+        </span> -->
         <el-dropdown>
           <span class="header-btn">
             {{$store.state.userInfo.roleName}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native="$router.push('/personal')"><i style="padding-right: 8px" class="fa fa-cog"></i>个人中心</el-dropdown-item>
+            <!-- <el-dropdown-item @click.native="$router.push('/personal')"><i style="padding-right: 8px" class="fa fa-cog"></i>个人中心</el-dropdown-item> -->
             <el-dropdown-item @click.native="logout"><i style="padding-right: 8px" class="fa fa-key"></i>退出系统</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -199,7 +199,8 @@
         this.NavBarWidth();
       },
       logout() {
-        sessionStorage.removeItem(this.$Config.tokenKey);
+        sessionStorage.removeItem('state');
+        this.$store.replaceState({baseCourse:[],userInfo:null,})
         this.$router.push({path: '/login'});
       },
       handleOpen(key, keyPath) {

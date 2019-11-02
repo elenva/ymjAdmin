@@ -54,6 +54,10 @@
     methods: {
       login() {
         const {username,password} = this;
+        if(!username || !password) {
+          this.$message.warning(`帐号密码不可为空`);
+          return
+        }
         this.loginLoading = true;
         //loginApi({userNmae:this.userNmae,password:this.password}).then(r=>{}).catch(_=>{})
         $login({username,password}).then(res=> {
