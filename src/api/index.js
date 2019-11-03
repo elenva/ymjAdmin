@@ -213,6 +213,23 @@ export function $getOssInfo(documentName){
         method:'post',
     }) 
 }
-// 
-// oss 获取上传凭证
+
+//获取类别
+export function $getAllCategory(documentName){
+    return request({
+        url:`/sys/baseCourse/getAll`,
+        method:'post',
+    }) 
+}
+
+//修改类别
+export function $setCategory(data){
+    return request({
+        url:`/sys/baseCourse/updateType`,
+        method:'post',
+        data
+    }) 
+}
+
+
 

@@ -6,7 +6,7 @@
         <div class="tableWrap">
            <slot name="tableArea"/>
         </div>
-        <div class="pagenationWrap">
+        <div class="pagenationWrap" v-if="tableData">
             <el-pagination
                 @current-change="currentChange"
                 background

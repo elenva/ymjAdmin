@@ -98,7 +98,7 @@ let RouteList = [
         component: resolve => require(['@/views/report/report.vue'], resolve),
       },
       {
-        path: '/category_manage',
+        path: '/category',
         name: 'CategoryManage',
         meta: {
           title: '分类列表',

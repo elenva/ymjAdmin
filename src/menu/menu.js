@@ -39,6 +39,20 @@ menu.home = {
  * @type {{name: string, icon: string, children: {}}}
  */
 if(store.state.userInfo.roleId === 1){
+  menu.category_manage = {
+    name: '类别管理',
+    icon: 'fa fa-file-text-o',
+    children: {}
+  };
+
+  let CategoryManage = menu.category_manage.children;
+  
+  CategoryManage.post = {
+    name: '类别管理',
+    path: '/category',
+  };
+  
+
   menu.content_manage = {
     name: '课程管理',
     icon: 'fa fa-file-text-o',
