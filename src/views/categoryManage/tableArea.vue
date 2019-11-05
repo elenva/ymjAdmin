@@ -121,7 +121,8 @@ export default {
             this.$refs.addDialogForm.validate(err => {
                 if(!err) return;
                 let params = addDialogModel;
-                addDialogModel.id = !showDialog.pid?'':showDialog.id
+                // addDialogModel.pid = !showDialog.pid?showDialog.id:showDialog.id
+                 addDialogModel.pid = showDialog.id
                 $setCategory(addDialogModel)
                     .then(res=> {
                         if(res.success) {
