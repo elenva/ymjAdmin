@@ -31,8 +31,8 @@
                 align="center" 
                 label="操作">
                 <template slot-scope="{row}">
-                    <el-button type="danger" size="mini">删除</el-button>
-                    <el-button type="success" size="mini">修改</el-button>
+                    <el-button type="danger" size="mini" @click="deleteRow(row)">删除</el-button>
+                    <!-- <el-button type="success" size="mini">修改</el-button> -->
                     <el-button
                         @click="add(row)"
                         type="primary" 
@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import {$saveFile,$setCategory} from '@/api/index';
+import {$saveFile,$setCategory,$deleteCategory} from '@/api/index';
 export default {
     name:"tableArea",
     props:["info"],
@@ -130,6 +130,22 @@ export default {
                             this.$emit(`refresh`)
                         }
                     })
+            })
+        },
+        deleteRow(row) {
+             this.$confirm('此操作将永久删除该类, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                $deleteCategory(row.id).then(res=> {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                    this.$emit('refresh');
+                })
+
             })
         }
     }    

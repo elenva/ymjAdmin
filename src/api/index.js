@@ -231,5 +231,12 @@ export function $setCategory(data){
     }) 
 }
 
+//删除一个类别
+export function $deleteCategory(id){
+    return request({
+        url:`/sys/baseCourse/deleteType/${id}`,
+        method:'post',
+    }) 
+}
 
 

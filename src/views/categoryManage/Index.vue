@@ -1,7 +1,7 @@
 <template>
   <Page>
     <div slot="handleArea" v-if="info">
-      <TbaleArea 
+      <TbaleArea
         v-for="item in info"
         @refresh="getAllCategory()" 
         :key="item.id"

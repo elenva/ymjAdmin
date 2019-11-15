@@ -54,7 +54,7 @@
                                                             
                             <el-table 
                                 :indent="2"
-                                :data="usersByAgentList" 
+                                :data="usersByAgentList"
                                 @expand-change="expandChange">
                                 <el-table-column type="expand">
                                     <template slot-scope="{row}">
