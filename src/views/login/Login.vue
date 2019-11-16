@@ -71,7 +71,7 @@
               type: 'success'
             });
           }
-        })
+        }).catch(res => this.loginLoading = false)
       }
     }
   }

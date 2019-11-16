@@ -10,5 +10,16 @@ module.exports = {
         // remove the prefetch plugin
         config.plugins.delete('prefetch')
 
+    },
+    devServer: {
+        proxy: {
+            '': {
+                 target: 'https://www.scynyykj.com/',
+                //target: "http://192.168.88.75:8083",
+                changeOrigin: true,
+                cookieDomainRewrite: "localhost",
+            }
+        }
     }
+
 }

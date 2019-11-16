@@ -4,7 +4,7 @@ import { Notification,Loading  } from 'element-ui';
 import {getToken,removeToken} from '../utils/dataStorage.js'
 
 const service = Axios.create({
-    baseURL: Config.apiUrl + '/' + Config.apiPrefix,
+    baseURL: '/',
     headers: {
         'Accept': '*/*'
     },
@@ -12,6 +12,7 @@ const service = Axios.create({
 })
 service.defaults.retry = Config.requestRetry;
 service.defaults.retryDelay = Config.requestRetryDelay;
+service.defaults.withCredentials=true
 
 service.interceptors.request.use(
     config => {

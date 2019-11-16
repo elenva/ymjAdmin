@@ -1,10 +1,10 @@
 import localKey from './localKey'
 // 192.168.88.18:81
-const devApiUrl = 'http://www.scynyykj.com';//本地开发环境
+const devApiUrl = 'https://www.scynyykj.com';//本地开发环境
 // const devApiUrl = 'http://27s540w789.zicp.vip:56976';//本地开发环境
 // const devApiUrl = 'http://www.miaomuxia.com:81';//本地开发环境
-const buildDevApiUrl = 'http://192.168.1.92:9088';//打包开发环境
-const buildTestApiUrl = 'http://192.168.1.92:6906';//打包测试环境
+// const buildDevApiUrl = 'http://192.168.1.92:9088';//打包开发环境
+// const buildTestApiUrl = 'http://192.168.1.92:6906';//打包测试环境
 // const buildProApiUrl = 'http://www.miaomuxia.com:81';//打包正式环境
 // const buildProApiUrl = 'http://27s540w789.zicp.vip:56976';//本地开发环境
 const buildProApiUrl = "https://www.scynyykj.com";//本地开发环境
