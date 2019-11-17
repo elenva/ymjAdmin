@@ -76,21 +76,21 @@ export function $saveFile(path,file){
     
     return new Promise((OK,Fail) => {
 
-        if(path === 'video' && file.type !== 'video/mp4'){
-            Message.warning(`视频格式限定为 video/mp4`);
-            Fail()
-            return;
-        }
-        if(path === 'img' && (file.type !== 'image/jpeg' && file.type !== 'image/png')){
-            Message.warning(`图片格式限定为 image/jpeg 或 image/png`);
-            Fail()
-            return;
-        }
-        if(path === 'audio' && file.type !== 'audio/mp3') {
-            Message.warning(`音频格式限定为 audio/mp3`);
-            Fail()
-            return;
-        }
+        // if(path === 'video' && file.type !== 'video/mp4'){
+        //     Message.warning(`视频格式限定为 video/mp4`);
+        //     Fail()
+        //     return;
+        // }
+        // if(path === 'img' && (file.type !== 'image/jpeg' && file.type !== 'image/png')){
+        //     Message.warning(`图片格式限定为 image/jpeg 或 image/png`);
+        //     Fail()
+        //     return;
+        // }
+        // if(path === 'audio' && file.type !== 'audio/mp3') {
+        //     Message.warning(`音频格式限定为 audio/mp3`);
+        //     Fail()
+        //     return;
+        // }
 
         const formData = new FormData();
 
