@@ -14,8 +14,8 @@ module.exports = {
     devServer: {
         proxy: {
             '': {
-                 target: 'https://www.scynyykj.com/',
-                //target: "http://192.168.88.75:8083",
+                // target: 'http://www.scynyykj.com/',
+                target: "http://192.168.88.18:8085",
                 changeOrigin: true,
                 cookieDomainRewrite: "localhost",
             }

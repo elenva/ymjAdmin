@@ -1,8 +1,9 @@
 import request from '../utils/request.js';
 import ElementUI from 'element-ui'
 import qs from 'qs';
+import OSS from 'ali-oss';
 
-const {Message} = ElementUI;
+const {Message,Loading} = ElementUI;
 
 //获取优惠券列表
 export function $getCoupons(params) {
@@ -96,28 +97,58 @@ export function $saveFile(path,file){
 
         $getOssInfo(path).then(res=> {
             const info = res.datas;
-            const key = info.dir+ '/' + file.lastModified + file.name
-            formData.append('key',key )
-            formData.append('name',file.name)
-            formData.append('policy', info.policy)
-            formData.append('OSSAccessKeyId',info.accessKeyId)
-            formData.append('success_action_status','200')
-            formData.append('signature',info.signature)
-            formData.append('file',file)
-            request({
-                url:info.host,
-                method:'post',
-                data:formData,
-                closeLoading:true,
-                headers:{
-                    'Content-Type':'multipart/form-data'
-                }
-            }).then(res=> {
-                OK(info.host + `/` + key)
-            }).catch(res => {
-                Message.error(`上传失败！`)
-                Fail();
-            })
+            const key = info.dir+ '/' + file.lastModified + file.name;
+            let loadingInstance1;
+            let loadingInstance2;
+
+            console.log(info)
+            let client = new OSS({
+                ...info,
+                bucket:'yumeijia',
+                endpoint:`https://oss-cn-chengdu.aliyuncs.com`
+            });
+
+            let fun = async function(){
+                try{
+                    let result = await client.multipartUpload(key,file,{
+                        parallel:5,
+                        progress:percentage=> {
+                            loadingInstance2.close();
+                            loadingInstance1 = Loading.service({ fullscreen: true, text:`${(percentage*100).toFixed(2)}%`});
+                        }
+                    })
+
+                    OK(`https://yumeijia.oss-cn-chengdu.aliyuncs.com/${result.name}`)
+                    loadingInstance1.close();
+                }catch{
+                    Message.error(`上传失败！`)
+                    Fail();
+                }   
+            }
+            loadingInstance2 = Loading.service()
+            fun()
+
+            // formData.append('key',key )
+            // formData.append('name',file.name)
+            // formData.append('policy', info.policy)
+            // formData.append('OSSAccessKeyId',info.accessKeyId)
+            // formData.append('success_action_status','200')
+            // formData.append('signature',info.signature)
+            // formData.append('file',file)
+            // request({
+            //     url:info.host,
+            //     method:'post',
+            //     data:formData,
+            //     closeLoading:true,
+            //     headers:{
+            //         'Content-Type':'multipart/form-data'
+            //     }
+            // }).then(res=> {
+            //     OK(info.host + `/` + key)
+            // }).catch(res => {
+            //     Message.error(`上传失败！`)
+            //     Fail();
+            // })
         })  
     })
     
