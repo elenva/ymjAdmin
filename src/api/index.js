@@ -101,7 +101,6 @@ export function $saveFile(path,file){
             let loadingInstance1;
             let loadingInstance2;
 
-            console.log(info)
             let client = new OSS({
                 ...info,
                 bucket:'yumeijia',
@@ -112,13 +111,14 @@ export function $saveFile(path,file){
                 try{
                     let result = await client.multipartUpload(key,file,{
                         parallel:5,
-                        progress:percentage=> {
+                        progress:(percentage,v,k)=> {
                             loadingInstance2.close();
+                            loadingInstance1 &&　loadingInstance1.close();
                             loadingInstance1 = Loading.service({ fullscreen: true, text:`${(percentage*100).toFixed(2)}%`});
                         }
                     })
-
                     OK(`https://yumeijia.oss-cn-chengdu.aliyuncs.com/${result.name}`)
+                    
                     loadingInstance1.close();
                 }catch{
                     Message.error(`上传失败！`)
