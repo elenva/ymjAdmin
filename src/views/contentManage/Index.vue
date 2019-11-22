@@ -452,7 +452,6 @@ export default {
     showUpDialog(){
       this.addDialogModel = JSON.parse(this.addDialogModelDefault);
       this.showAddDialog = '111';
-
     },
     selectChange(e) {
       console.log(e)
@@ -465,7 +464,7 @@ export default {
           if(this.addDialogModel.imgUrl) {
             let params = {
               ...this.addDialogModel,
-              id:!this.showAddDialog?'':this.showAddDialog,
+              id:(!this.showAddDialog ||  this.showAddDialog === '111')?'':this.showAddDialog,
               courseTypeStr:this.addDialogModel.courseTypeList.join(','),//服务器存储课程类别的字符串
               courseTypeId:this.addDialogModel.courseTypeList[this.addDialogModel.courseTypeList.length-1],//服务器存储课程类别的id
             }
