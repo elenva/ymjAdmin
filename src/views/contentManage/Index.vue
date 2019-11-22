@@ -412,14 +412,15 @@ export default {
     //获取课程列表
     this.getCourse();
 
+    //保存addDialogModel最原始的值
+    this.addDialogModelDefault = JSON.stringify(this.addDialogModel);
+
     //获取课程类别
     this.$store.dispatch("getBaseCourse")
   },
   watch:{
     baseCourse:{
-      handler:function(newV){
-        console.log(newV)
-      },
+      handler:function(newV){},
       deep:true
     }
   },
@@ -449,7 +450,9 @@ export default {
     },
     //打开上传的dialog
     showUpDialog(){
+      this.addDialogModel = JSON.parse(this.addDialogModelDefault);
       this.showAddDialog = '111';
+
     },
     selectChange(e) {
       console.log(e)
