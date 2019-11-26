@@ -22,7 +22,7 @@ export default new Vuex.Store({
   },
   actions:{
     getBaseCourse({state,commit}){
-      request({url: '/course/getBaseCourse'})
+      request({url: '/course/getBaseCourse',closeLoading:true})
         .then(res=> commit(`setBaseCourse`,res.datas))
     }
   }

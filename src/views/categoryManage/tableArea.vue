@@ -32,7 +32,7 @@
                 label="操作">
                 <template slot-scope="{row}">
                     <el-button type="danger" size="mini" @click="deleteRow(row)">删除</el-button>
-                    <!-- <el-button type="success" size="mini">修改</el-button> -->
+                    <el-button type="success" size="mini"  @click="editRow(row)">修改</el-button>
                     <el-button
                         @click="add(row)"
                         type="primary" 
@@ -73,7 +73,8 @@
                     <el-button 
                         type="primary" 
                         class="button" 
-                        @click="addAjax">添加</el-button>
+                        @click="addAjax(isEdit?showDialog.id:null)">
+                        {{isEdit?'修改':"添加"}}</el-button>
                 </div>
             </el-form>
         </el-dialog>
@@ -85,6 +86,11 @@ import {$saveFile,$setCategory,$deleteCategory} from '@/api/index';
 export default {
     name:"tableArea",
     props:["info"],
+    computed:{
+        isEdit(){
+            return this.dialogTitle.indexOf("修改")!== -1;
+        }
+    },
     data(){
         return {
             dialogTitle:"",
@@ -107,7 +113,9 @@ export default {
         add(row){
             const infoName = this.info.name;
             this.dialogTitle = row?`给${row.name}添加子类`:`给${infoName}添加子类`
-            this.showDialog = row || this.info
+            this.showDialog = row || this.info;
+            this.addDialogModel.icon_img = "";
+            this.addDialogModel.name = "";
         },
         beforeUpload(f){
             $saveFile('img',f.raw).then(res=> {
@@ -116,14 +124,18 @@ export default {
                 upIcon.clearValidate();
             })
         },
-        addAjax(){
+        addAjax(id){
             const {addDialogModel,showDialog} = this;
             this.$refs.addDialogForm.validate(err => {
-                if(!err) return;
+                console.log(err)
                 let params = addDialogModel;
                 // addDialogModel.pid = !showDialog.pid?showDialog.id:showDialog.id
-                 addDialogModel.pid = showDialog.id
-                $setCategory(addDialogModel)
+                addDialogModel.pid = showDialog.id
+                $setCategory({
+                    ...addDialogModel,
+                    id:id||'',
+                    pid:id?'':addDialogModel.pid
+                })
                     .then(res=> {
                         if(res.success) {
                             this.showDialog = false;
@@ -147,6 +159,13 @@ export default {
                 })
 
             })
+        },
+        editRow(row){
+            const infoName = this.info.name;
+            this.dialogTitle = `修改${row.name}`
+            this.showDialog = row 
+            this.addDialogModel.icon_img = row.icon_img;
+            this.addDialogModel.name = row.name;
         }
     }    
 }

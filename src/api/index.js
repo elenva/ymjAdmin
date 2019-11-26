@@ -113,13 +113,15 @@ export function $saveFile(path,file){
                         parallel:5,
                         progress:(percentage,v,k)=> {
                             loadingInstance2.close();
-                            loadingInstance1 &&　loadingInstance1.close();
+                            // loadingInstance1 &&　loadingInstance1.close();
                             loadingInstance1 = Loading.service({ fullscreen: true, text:`${(percentage*100).toFixed(2)}%`});
                         }
                     })
                     OK(`https://yumeijia.oss-cn-chengdu.aliyuncs.com/${result.name}`)
+                    setTimeout(()=> {
+                        loadingInstance1.close();
+                    },200)
                     
-                    loadingInstance1.close();
                 }catch{
                     Message.error(`上传失败！`)
                     Fail();

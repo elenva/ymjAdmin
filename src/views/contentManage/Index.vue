@@ -31,6 +31,7 @@
                   maxlength="20"
                   v-model="status" 
                   allowClear>
+                  <el-option label="全部" :value="0"/>
                   <el-option label="已上架" :value="1"/>
                   <el-option label="已下架" :value="2"/>
               </el-select>
@@ -122,8 +123,11 @@
               </el-table-column>
               <el-table-column
                   align="center"
-                  prop="keyword2"
-                  label="总时长(分钟)">
+                  prop="courseTypeStr"
+                  label="类别">
+                <template slot-scope="{row}">
+                  {{showType(row.courseTypeStr)}}
+                </template>
               </el-table-column>
               <el-table-column
                   align="center"
@@ -137,12 +141,12 @@
                           @click="editRow(row)">修改</el-button>
                       <el-button
                           v-if="row.status === 1"
-                          @click="setCourseStatus(row.id,2)"
+                          @click="setCourseStatus(row,2)"
                           style="color:red"
                           size="mini" 
                           type="text">下架</el-button>   
                       <el-button
-                          @click="setCourseStatus(row.id,1)"
+                          @click="setCourseStatus(row,1)"
                           v-if="row.status === 2"
                           style="color:green"
                           size="mini" 
@@ -335,7 +339,7 @@ export default {
       courseType:"",
       key:'',
       page:1,
-      status:1,
+      status:0,
       tableData:null,
       showAddDialog:false,
       uploadedList:[{file:'dasdasdas.mp4',documentName:""}],
@@ -566,27 +570,30 @@ export default {
       }
     },
     //修改上架下架状态
-    setCourseStatus(id,status){
-      $setCourseStatus(id,status).then(res=> {
-        if(res.success) {
-          this.$message({
-            type: 'success',
-            message: '操作成功!'
-          });
-          this.getCourse()
-        }
-      })
-    },
-    //删除一个课程
-    deleteRow(row){
-      this.$confirm(`此操作将永久删除《${row.name}》, 是否继续?`, '提示', {
+    setCourseStatus(row,status){
+      const str = status
+                  ?`此操作将${status===2?'下架':'上架'}《${row.name}》, 是否继续?`
+                  :`此操作将永久删除《${row.name}》, 是否继续?`
+      this.$confirm(str, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
         center: true
       }).then(() => {
-        this.setCourseStatus(row.id,0)
+        $setCourseStatus(row.id,status).then(res=> {
+          if(res.success) {
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+            this.getCourse()
+          }
+        })
       })
+    },
+    //删除一个课程
+    deleteRow(row){
+      this.setCourseStatus(row,0)
     },
     //添加课程节数
     addNode(row) {
@@ -674,6 +681,21 @@ export default {
           this.$message.success(`删除成功`)
         })
       })
+    },
+    //显示类别
+    showType(type){
+      const arr = [];
+      const typeArr = type.split(',');
+      let tarArr = this.baseCourse;
+
+      typeArr.map(item => {
+        const tar = tarArr.find(el=> {
+          return el.id === Number(item);
+        })
+        arr.push(tar.name);
+        tarArr = tar.children;
+      })
+      return arr.join(' / ');
     }
   },
   components:{
