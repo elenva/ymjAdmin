@@ -1,8 +1,9 @@
 import request from '../utils/request.js';
 import ElementUI from 'element-ui'
+import Vue from 'vue';
 import qs from 'qs';
 import OSS from 'ali-oss';
-
+ 
 const {Message,Loading} = ElementUI;
 
 //获取优惠券列表
@@ -73,7 +74,7 @@ export function $getCourse(params){
 }
 
 //保存文件
-export function $saveFile(path,file){
+export function $saveFile(path,file,progressFun){
     
     return new Promise((OK,Fail) => {
 
@@ -112,22 +113,20 @@ export function $saveFile(path,file){
                     let result = await client.multipartUpload(key,file,{
                         parallel:5,
                         progress:(percentage,v,k)=> {
-                            loadingInstance2.close();
-                            // loadingInstance1 &&　loadingInstance1.close();
-                            loadingInstance1 = Loading.service({ fullscreen: true, text:`${(percentage*100).toFixed(2)}%`});
+                            progressFun && progressFun((Number(percentage*100).toFixed(0)))
+                            // if(percentage===1) {
+                            //     loadingInstance1.close();
+                            // }
+                            // loadingInstance1 = Loading.service({ fullscreen: true, text:`${(percentage*100).toFixed(2)}%`});
                         }
                     })
                     OK(`https://yumeijia.oss-cn-chengdu.aliyuncs.com/${result.name}`)
-                    setTimeout(()=> {
-                        loadingInstance1.close();
-                    },200)
-                    
                 }catch{
                     Message.error(`上传失败！`)
                     Fail();
                 }   
             }
-            loadingInstance2 = Loading.service()
+            // loadingInstance2 = Loading.service()
             fun()
 
             // formData.append('key',key )
@@ -175,6 +174,15 @@ export function $setCourseStatus(id,status){
 
 //添加一个代理
 export function $addAgent(data){
+    return request({
+        url:`/sys/permission/addUser`,
+        method:'post',
+        data
+    })
+}
+
+//删除一个代理
+export function $deleteAgent(data){
     return request({
         url:`/sys/permission/addUser`,
         method:'post',

@@ -307,6 +307,10 @@
             <input type="file" @change="beforeKJUpload" id="kjInput"/>
             <p v-if="courseVos.url">{{courseVos.url}}</p>
           </el-form-item>
+          <el-form-item>
+            <el-progress :percentage="percentage" v-if="percentage"></el-progress>
+          </el-form-item>
+          
           <el-row>
             <el-button type="primary" @click="addcourseVos">添加</el-button>
           </el-row>
@@ -325,6 +329,7 @@ import OSS from 'ali-oss';
 export default {
   data(){
     return {
+      percentage:null,//上传进度
       currentNode:null,//当前被选中的行
       courseVos:null,//课节
       courseVosRules:{
@@ -614,7 +619,14 @@ export default {
       const tp = ['video','audio','img'];
       const file = e.target.files[0]
 
-      $saveFile(tp[this.courseVos.type-1],file).then(res=> {
+      $saveFile(tp[this.courseVos.type-1],file,progress=> {
+        this.percentage = Number(progress)
+        if(Number(progress)===100){
+          this.$message.success(`上传成功`)
+          this.percentage = null;
+        }
+      
+      }).then(res=> {
         this.courseVos.url = res
       }).catch(res=> {
         const dom = document.querySelector("#kjInput");

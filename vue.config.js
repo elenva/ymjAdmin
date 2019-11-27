@@ -15,8 +15,8 @@ module.exports = {
         proxy: {
             '': {
                 // target: 'https://www.scynyykj.com/',
-                // target: "http://192.168.88.18:8085",
-                target:"http://27s540w789.zicp.vip:56976/",
+                target: "http://118.190.245.101:8084/",
+                // target:"http://27s540w789.zicp.vip:56976/",
                 changeOrigin: true,
                 cookieDomainRewrite: "localhost",
             }

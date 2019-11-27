@@ -48,6 +48,14 @@
                                     prop="username"
                                     align="center"
                                     label="代理登陆帐号"></el-table-column>
+                                <el-table-column
+                                    prop="id"
+                                    align="center"
+                                    label="操作">
+                                    <template slot-scope="{row}">
+                                        <el-button size="mini" type="danger" @click="delteAgent(row)">删除</el-button>
+                                    </template>
+                                    </el-table-column>    
                             </el-table>
                         </el-tab-pane>
                         <el-tab-pane label="普通用户" name="user">
@@ -187,7 +195,7 @@
 
 <script>
 import cities from '@/assets/js/cities.js';
-import {$addAgent,$getUsers,$getAgentUsers,$getUserByAgent,$getCourse,$authorizeCourseToUser,$authedCourse} from '@/api/index';
+import {$addAgent,$getUsers,$getAgentUsers,$getUserByAgent,$getCourse,$authorizeCourseToUser,$authedCourse,$deleteAgent} from '@/api/index';
 export default {
     data(){
         return {
@@ -368,8 +376,18 @@ export default {
                 }
             })
         },
-        test(row) {
-            console.log(row)
+        //删除一个代理
+        delteAgent(row) {
+            this.$confirm('此操作将删除该代理, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(res=> {
+                console.log(row)
+                $deleteAgent({
+                    id:row.id
+                })
+            })
         }
     }
 }
