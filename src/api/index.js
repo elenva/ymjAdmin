@@ -184,7 +184,7 @@ export function $addAgent(data){
 //删除一个代理
 export function $deleteAgent(data){
     return request({
-        url:`/sys/permission/addUser`,
+        url:`/sys/permission/deleteUser`,
         method:'post',
         data
     })

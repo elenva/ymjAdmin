@@ -383,9 +383,12 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(res=> {
-                console.log(row)
                 $deleteAgent({
                     id:row.id
+                }).then(res=> {
+                    if(res.success){
+                        this.getAgentUsers();
+                    }
                 })
             })
         }
