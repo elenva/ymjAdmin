@@ -35,6 +35,11 @@
       </div>
 
     </div>
+    <div id="icp">
+      <a href="http://www.beian.miit.gov.cn">
+        蜀ICP备19034242号
+      </a>
+    </div>
   </div>
 </template>
 
@@ -79,4 +84,17 @@
 
 <style lang="scss">
   @import "Login.scss";
+  #icp {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 30px;
+    font-size: 20px;
+    line-height: 30px;
+    text-align: center;
+    color: #fff;
+    z-index: 100;
+    width: 100%;
+    background:#000;
+  }
 </style>
