@@ -13,7 +13,7 @@
     "axios": "^0.18.0",
     "element-ui": "^2.12.0",
     "good-storage": "^1.1.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "qs": "^6.9.0",
     "screenfull": "^3.3.3",
     "vue": "^2.6.6",
